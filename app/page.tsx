@@ -1,6 +1,6 @@
   "use client";
 
-  import { useEffect, useState, useRef } from "react";
+ import { useEffect, useState, useRef, type ReactElement } from "react";
   import Link from "next/link";
   import {
     Activity, Target, Heart, Battery, Footprints, Eye, TrendingUp, BookOpen, Compass,
@@ -87,7 +87,7 @@
   // 渲染报告为卡片
   function renderReportCards(data: { [key: string]: any }) {
     const items = Object.entries(REPORT_LABELS);
-    const cards: JSX.Element[] = [];
+    const cards: ReactElement[] = [];
     for (const [key, label] of items) {
       const content = data[key];
       if (!content || (typeof content === "string" && content.trim() === "")) continue;
