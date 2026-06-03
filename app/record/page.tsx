@@ -22,6 +22,7 @@ interface Record {
   feedbackText?: string;
   clarification?: string;
   revisedFeedback?: string;
+  summary?: string;
 }
 
 function generateId() {
@@ -36,7 +37,7 @@ function todayStr() {
   return `${y}-${m}-${day}`;
 }
 
-// 清洗文本中的 markdown 符号
+// 清洗文本中的 markdown 符号和残留引号括号
 function cleanText(text: string): string {
   return text
     .replace(/\*\*(.+?)\*\*/g, "$1")
@@ -44,6 +45,7 @@ function cleanText(text: string): string {
     .replace(/[*#_`~-]{2,}/g, "")
     .replace(/^[-*]\s/gm, "")
     .replace(/^#+\s/gm, "")
+    .replace(/[{}[\]"]/g, "")
     .trim();
 }
 
@@ -81,26 +83,75 @@ const CARD_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   "下一步小行动": ArrowRight,
 };
 
-// 渲染 JSON 反馈为卡片
+// 将单个要点按"小标题：正文"格式拆分渲染
+function renderPoint(text: string): JSX.Element {
+  const colonIndex = text.indexOf("：");
+  if (colonIndex > 0 && colonIndex < 20) {
+    const title = text.slice(0, colonIndex);
+    const body = text.slice(colonIndex + 1).trim();
+    if (body) {
+      return (
+        <div className="text-sm text-[#5A544B] leading-relaxed">
+          <strong className="font-semibold text-[#3D3A34]">{cleanText(title)}</strong>
+          <span className="ml-1">：{cleanText(body)}</span>
+        </div>
+      );
+    }
+  }
+  return <span className="text-sm text-[#5A544B] leading-relaxed">{cleanText(text)}</span>;
+}
+
+// 渲染单张卡片正文：数组→分点列表，字符串→段落
+function renderCardContent(content: any): JSX.Element | null {
+  if (Array.isArray(content)) {
+    const items = content.filter(
+      (item: any) => typeof item === "string" && item.trim()
+    );
+    if (items.length === 0) return null;
+    return (
+      <ul className="space-y-3">
+        {items.map((item: string, i: number) => (
+          <li
+            key={i}
+            className="flex items-start gap-2.5"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#8FAE8B] mt-[9px] shrink-0" />
+            <div className="flex-1 min-w-0">{renderPoint(item)}</div>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  const text = typeof content === "string" ? content : "";
+  if (!text.trim()) return null;
+  return (
+    <p className="text-sm text-[#5A544B] leading-relaxed whitespace-pre-wrap">
+      {cleanText(text)}
+    </p>
+  );
+}
+
+// 渲染 JSON 反馈为多卡片
 function renderFeedbackCards(data: Record<string, any>) {
-  const items = Object.entries(CARD_LABELS);
   const cards: JSX.Element[] = [];
 
-  for (const [key, label] of items) {
+  // 常规卡片（外层循环：每个字段一张独立卡片）
+  for (const [key, label] of Object.entries(CARD_LABELS)) {
     const content = data[key];
-    if (!content || (typeof content === "string" && content.trim() === "")) continue;
+    if (content == null) continue;
+    if (typeof content === "string" && content.trim() === "") continue;
+    if (Array.isArray(content) && content.length === 0) continue;
+    const rendered = renderCardContent(content);
+    if (!rendered) continue;
+    const Icon = CARD_ICONS[key];
     cards.push(
       <div key={key} className="bg-white rounded-2xl border border-[#E2DDD2] p-6">
         <h3 className="text-xs font-medium text-[#7A746B] mb-3 tracking-wide uppercase flex items-center gap-1.5">
-          {(() => {
-            const Icon = CARD_ICONS[key];
-            return Icon ? <Icon className="text-[#8FAE8B]" size={14} /> : null;
-          })()}
+          {Icon ? <Icon className="text-[#8FAE8B]" size={14} /> : null}
           {label}
         </h3>
-        <p className="text-sm text-[#5A544B] leading-relaxed whitespace-pre-wrap">
-          {cleanText(typeof content === "string" ? content : JSON.stringify(content))}
-        </p>
+        {rendered}
       </div>
     );
   }
@@ -357,6 +408,7 @@ export default function RecordPage() {
           const idx = all.findIndex((r) => r.id === today.id);
           if (idx !== -1) {
             all[idx].feedbackText = jsonStr;
+            if (data["总结"]) all[idx].summary = data["总结"];
             localStorage.setItem("self-observation-records", JSON.stringify(all));
           }
         }
@@ -404,6 +456,7 @@ export default function RecordPage() {
           all[idx].feedbackText = jsonStr;
           all[idx].clarification = undefined;
           all[idx].revisedFeedback = undefined;
+          if (data["总结"]) all[idx].summary = data["总结"];
           localStorage.setItem("self-observation-records", JSON.stringify(all));
         }
       }

@@ -68,6 +68,24 @@ const REPORT_ICONS: Record<string, React.ComponentType<{ className?: string }>> 
   "下阶段建议": Compass,
 };
 
+// 将单个要点按"小标题：正文"格式拆分渲染
+function renderPoint(text: string): JSX.Element {
+  const colonIndex = text.indexOf("：");
+  if (colonIndex > 0 && colonIndex < 20) {
+    const title = text.slice(0, colonIndex);
+    const body = text.slice(colonIndex + 1).trim();
+    if (body) {
+      return (
+        <div className="text-sm text-[#5A544B] leading-relaxed">
+          <strong className="font-semibold text-[#3D3A34]">{cleanText(title)}</strong>
+          <span className="ml-1">：{cleanText(body)}</span>
+        </div>
+      );
+    }
+  }
+  return <span className="text-sm text-[#5A544B] leading-relaxed">{cleanText(text)}</span>;
+}
+
 function renderCardContent(content: any): JSX.Element | null {
   // 数组 → 要点列表（内层循环：每条要点一行）
   if (Array.isArray(content)) {
@@ -76,14 +94,14 @@ function renderCardContent(content: any): JSX.Element | null {
     );
     if (items.length === 0) return null;
     return (
-      <ul className="space-y-2">
+      <ul className="space-y-3">
         {items.map((item: string, i: number) => (
           <li
             key={i}
-            className="flex items-start gap-2.5 text-sm text-[#5A544B] leading-relaxed"
+            className="flex items-start gap-2.5"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#8FAE8B] mt-[7px] shrink-0" />
-            <span>{cleanText(item)}</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#8FAE8B] mt-[9px] shrink-0" />
+            <div className="flex-1 min-w-0">{renderPoint(item)}</div>
           </li>
         ))}
       </ul>

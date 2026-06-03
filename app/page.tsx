@@ -20,6 +20,7 @@ interface Record {
   feedbackText?: string;
   clarification?: string;
   revisedFeedback?: string;
+  summary?: string;
 }
 
 // 清洗文本中的 markdown 符号
@@ -30,6 +31,7 @@ function cleanText(text: string): string {
     .replace(/[*#_`~-]{2,}/g, "")
     .replace(/^[-*]\s/gm, "")
     .replace(/^#+\s/gm, "")
+    .replace(/[{}[\]"]/g, "")
     .trim();
 }
 
@@ -278,7 +280,7 @@ export default function Home() {
                       {r.date}
                     </span>
                     <span className="text-sm text-[#5A544B] truncate flex-1">
-                      {preview(r.whatHappened || r.emotion || r.observation || r.drain || "")}
+                      {r.summary || preview(r.whatHappened || r.emotion || r.observation || r.drain || "")}
                     </span>
                     <span className="text-xs text-[#7A746B] shrink-0">
                       {expandedId === r.id ? "收起" : "展开"}
@@ -350,7 +352,9 @@ export default function Home() {
                                   const end = r.feedbackText.lastIndexOf("}");
                                   if (start !== -1 && end > start) {
                                     const json = JSON.parse(r.feedbackText.slice(start, end + 1));
-                                    return json["关键信号"] || json["情绪与需求"] || "";
+                                    const signal = json["关键信号"];
+                                    if (Array.isArray(signal)) return cleanText(signal[0] || "");
+                                    return cleanText(signal || json["情绪与需求"] || "");
                                   }
                                 } catch {}
                                 return r.feedbackText.replace(/\d+\.\s+/g, "").slice(0, 200);

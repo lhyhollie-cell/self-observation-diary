@@ -15,28 +15,40 @@ const SYSTEM_PROMPT = `你是用户的长期 AI 自我观察协作者。
 2. 今日记录：用户最新提交的一条
 
 【你的输出要求】
-你只能返回一个合法的 JSON 对象，包含以下 7 个字段，每个字段的值是纯字符串（不是数组），不要包含任何其他文字：
+你只能返回一个合法的 JSON 对象，包含以下 8 个字段。前 6 个字段的值是字符串数组，每个数组 2-4 个要点，每个要点必须使用"小标题：深度分析"的格式。"总结"是单个字符串（约 8-12 字）。"追问"是字符串数组。不要包含任何其他文字：
 {
-  "关键信号": "字符串",
-  "情绪与需求": "字符串",
-  "行动与卡点": "字符串",
-  "充电与消耗": "字符串",
-  "长期观察信号": "字符串",
-  "下一步小行动": "字符串",
-  "追问": ["字符串数组", "2-3个问题"]
+  "关键信号": ["小标题：分析正文", "小标题：分析正文"],
+  "情绪与需求": ["小标题：分析正文", "小标题：分析正文"],
+  "行动与卡点": ["小标题：分析正文", "小标题：分析正文"],
+  "充电与消耗": ["小标题：分析正文", "小标题：分析正文"],
+  "长期观察信号": ["小标题：分析正文", "小标题：分析正文"],
+  "下一步小行动": ["小标题：分析正文", "小标题：分析正文"],
+  "总结": "约8-12字的简短总结",
+  "追问": ["问题1", "问题2"]
 }
 
-注意：所有字段的值必须是纯自然语言文本，绝对不要使用任何 markdown 符号（不要 **、不要 #、不要 -、不要 *、不要 >、不要 \`）。
+注意：所有字段的值必须是纯自然语言文本，绝对不要使用任何 markdown 符号（不要 **、不要 #、不要 -、不要 *、不要 >、不要 \`）。每个要点用中文冒号分隔标题与正文。各要点结尾不要带逗号。
 
 【内容要求】
-请基于历史+今日，按以下结构输出 JSON：
+请基于历史+今日，按以下结构输出 JSON。每个要点必须包含"小标题：深度分析"：
+
+标题部分：几个字点出这一要点在讲什么（如"社交消耗""选择焦虑""散步有效"）
+分析正文：2-4 句，必须包含完整的推理链条：【现象 → 背后原因/心理机制 → 关联或影响】
+
+具体要求：
 1. 关键信号：这次记录的关键信号
 2. 情绪与需求：最明显的情绪 + 推测背后可能的需求
 3. 行动与卡点：行动方式 + 卡住的可能原因
 4. 充电与消耗：恢复来源与消耗来源
-5. 长期观察信号：仅当与历史模式明显相关时才写，否则输出空字符串
+5. 长期观察信号：仅当与历史模式明显相关时才写，否则输出空数组
 6. 下一步小行动：一个最轻量、最现实的下一步行动
-7. 追问：2-3 个你想继续追问用户的问题
+7. 总结：为今天的记录生成一句简短总结（约 8-12 字），概括当天核心状态，如"等待消息·焦虑·散步舒缓"
+8. 追问：2-3 个你想继续追问用户的问题
+
+【分析深度要求】
+- 每个要点要做"分析"而非"复述"——不要重描用户写的内容，而要解释"这意味着什么""为什么可能发生""和什么有关"
+- 包含推理链：观察到什么 → 可能的原因/机制 → 与历史或其他因素的关联
+- 可以使用推测语气（"可能""似乎""推测"），但必须基于记录中的具体信息
 
 【表达规则】
 - 必须区分：已观察到的事实 / 当前推测 / 待验证假设
@@ -75,16 +87,30 @@ async function fetchFullResponse(messages: { role: string; content: string }[]):
 
   const decoder = new TextDecoder();
   let fullText = "";
+  let leftover = "";
 
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
-    const chunk = decoder.decode(value, { stream: true });
+    const chunk = leftover + decoder.decode(value, { stream: true });
     const lines = chunk.split("\n");
+    leftover = lines.pop() || "";
+
     for (const line of lines) {
       if (!line.startsWith("data: ")) continue;
       const data = line.slice(6);
       if (data === "[DONE]") continue;
+      try {
+        const parsed = JSON.parse(data);
+        const content = parsed.choices?.[0]?.delta?.content || "";
+        if (content) fullText += content;
+      } catch {}
+    }
+  }
+
+  if (leftover.startsWith("data: ")) {
+    const data = leftover.slice(6);
+    if (data !== "[DONE]") {
       try {
         const parsed = JSON.parse(data);
         const content = parsed.choices?.[0]?.delta?.content || "";
@@ -118,6 +144,27 @@ function safeParseJSON(text: string): Record<string, any> | null {
 }
 
 function buildFallback(raw: string) {
+  // 如果 raw 是完整 JSON 对象，直接提取字段
+  if (raw && raw.trim()) {
+    try {
+      const trimmed = raw.trim();
+      if (trimmed.startsWith("{")) {
+        const parsed = JSON.parse(trimmed);
+        const expectedKeys = ["关键信号", "情绪与需求", "行动与卡点", "充电与消耗", "长期观察信号", "下一步小行动", "追问"];
+        const hasAnyField = expectedKeys.some((k) => k in parsed);
+        if (hasAnyField) {
+          const result: Record<string, any> = {};
+          for (const k of expectedKeys) {
+            result[k] = k in parsed ? parsed[k] : (k === "追问" ? [] : "");
+          }
+          // 额外提取总结字段
+          if (parsed["总结"]) result["总结"] = parsed["总结"];
+          return result;
+        }
+      }
+    } catch {}
+  }
+
   return {
     关键信号: raw || "AI 反馈生成异常，请稍后重试。",
     情绪与需求: "",
