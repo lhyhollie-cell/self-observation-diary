@@ -16,7 +16,7 @@ interface Report {
   generatedAt: string;
   rangeStart: string;
   rangeEnd: string;
-  data: Record<string, any> | null;
+  data: { [key: string]: any } | null;
   error?: string;
 }
 
