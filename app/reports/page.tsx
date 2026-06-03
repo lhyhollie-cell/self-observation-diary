@@ -287,13 +287,13 @@ export default function ReportsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen">
       <main className="max-w-2xl mx-auto px-6 py-12">
         {/* 顶部导航 */}
         <div className="mb-10">
           <Link
             href="/"
-            className="text-sm text-[#7A746B] hover:text-[#5A544B] transition-colors"
+            className="text-sm text-[var(--text-label)] hover:text-[var(--text-body)] transition-colors"
           >
             ← 返回首页
           </Link>
@@ -301,10 +301,10 @@ export default function ReportsPage() {
 
         {/* 标题区 */}
         <div className="text-center mb-10">
-          <h1 className="text-2xl font-medium text-[#3D3A34] tracking-tight">
+          <h1 className="text-2xl font-medium text-[var(--text-heading)] tracking-tight">
             阶段报告
           </h1>
-          <p className="mt-2 text-sm text-[#7A746B]">
+          <p className="mt-2 text-sm text-[var(--text-label)]">
             基于你的全部记录生成的阶段性回顾
           </p>
         </div>
@@ -316,21 +316,21 @@ export default function ReportsPage() {
             setValidationError("");
           }}
           disabled={hasGenerating}
-          className="w-full px-6 py-3 bg-[#D9C2A3] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#CBB596] transition-colors disabled:opacity-40"
+          className="w-full px-6 py-3 bg-[var(--color-secondary)] text-white rounded-xl text-sm font-medium hover:bg-[var(--color-secondary-hover)] transition-colors disabled:opacity-40"
         >
           {showPicker ? "取消" : "生成阶段报告"}
         </button>
 
         {/* 时间范围选择器 */}
         {showPicker && (
-          <div className="mt-4 bg-white rounded-2xl border border-[#E2DDD2] p-6 space-y-4">
-            <h3 className="text-sm font-medium text-[#3D3A34]">
+          <div className="mt-4 card-mist p-6 space-y-4">
+            <h3 className="text-sm font-medium text-[var(--text-heading)]">
               选择时间范围
             </h3>
 
             <div className="flex items-center gap-3">
               <div className="flex-1">
-                <label className="text-xs text-[#7A746B] block mb-1">
+                <label className="text-xs text-[var(--text-label)] block mb-1">
                   开始日期
                 </label>
                 <input
@@ -341,12 +341,12 @@ export default function ReportsPage() {
                     setValidationError("");
                   }}
                   max={todayStr()}
-                  className="w-full px-3 py-2 border border-[#E2DDD2] rounded-lg text-sm text-[#3D3A34] bg-[#FCFAF5] focus:outline-none focus:border-[#A8C3A4] transition-colors"
+                  className="w-full px-3 py-2 border border-[var(--card-border)] rounded-lg text-sm text-[var(--text-heading)] bg-[var(--input-bg)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                 />
               </div>
-              <span className="text-[#9E988E] mt-5">—</span>
+              <span className="text-[var(--text-muted)] mt-5">—</span>
               <div className="flex-1">
-                <label className="text-xs text-[#7A746B] block mb-1">
+                <label className="text-xs text-[var(--text-label)] block mb-1">
                   结束日期
                 </label>
                 <input
@@ -357,7 +357,7 @@ export default function ReportsPage() {
                     setValidationError("");
                   }}
                   max={todayStr()}
-                  className="w-full px-3 py-2 border border-[#E2DDD2] rounded-lg text-sm text-[#3D3A34] bg-[#FCFAF5] focus:outline-none focus:border-[#A8C3A4] transition-colors"
+                  className="w-full px-3 py-2 border border-[var(--card-border)] rounded-lg text-sm text-[var(--text-heading)] bg-[var(--input-bg)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                 />
               </div>
             </div>
@@ -365,7 +365,7 @@ export default function ReportsPage() {
             <div className="flex items-center gap-3">
               <button
                 onClick={handleSelectAll}
-                className="flex-1 px-4 py-2.5 bg-[#E6F0E4] text-[#6B8F67] rounded-xl text-sm font-medium border border-[#C8DDC4] hover:bg-[#D8E8D4] transition-colors"
+                className="flex-1 px-4 py-2.5 bg-[var(--tag-bg)] text-[var(--color-accent)] rounded-xl text-sm font-medium border border-[var(--card-border)] hover:bg-[var(--tag-bg)]/80 transition-colors"
               >
                 选中全部记录
               </button>
@@ -375,7 +375,7 @@ export default function ReportsPage() {
                   setEndDate("");
                   setValidationError("");
                 }}
-                className="flex-1 px-4 py-2.5 border border-[#E2DDD2] text-[#7A746B] rounded-xl text-sm font-medium hover:bg-[#F5F1E8] transition-colors"
+                className="flex-1 px-4 py-2.5 border border-[var(--card-border)] text-[var(--text-label)] rounded-xl text-sm font-medium hover:bg-[var(--tag-bg)] transition-colors"
               >
                 清除日期
               </button>
@@ -384,13 +384,13 @@ export default function ReportsPage() {
             <button
               onClick={handleGenerate}
               disabled={generating}
-              className="w-full px-6 py-3 bg-[#A8C3A4] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#8FAE8B] transition-colors disabled:opacity-40"
+              className="w-full px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors disabled:opacity-40"
             >
               {generating ? "生成中……" : "确认生成"}
             </button>
 
             {validationError && (
-              <p className="text-xs text-[#c4846a]">{validationError}</p>
+              <p className="text-xs text-[var(--color-error)]">{validationError}</p>
             )}
           </div>
         )}
@@ -398,8 +398,8 @@ export default function ReportsPage() {
         {/* 报告列表 */}
         <section className="mt-10">
           {reports.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-[0_1px_4px_0_rgba(0,0,0,0.04)] border border-[#E2DDD2] p-10 text-center">
-              <p className="text-sm text-[#7A746B]">
+            <div className="card-mist p-10 text-center">
+              <p className="text-sm text-[var(--text-label)]">
                 当前暂未生成阶段报告
               </p>
             </div>
@@ -408,22 +408,22 @@ export default function ReportsPage() {
               {reports.map((r) => (
                 <div
                   key={r.id}
-                  className="bg-white rounded-2xl shadow-[0_1px_4px_0_rgba(0,0,0,0.04)] border border-[#E2DDD2] overflow-hidden"
+                  className="card-mist overflow-hidden"
                 >
                   {r.data === null && !r.error ? (
                     /* 生成中状态 */
                     <div className="flex items-center">
                       <div className="flex-1 px-5 py-4 opacity-50">
-                        <p className="text-sm text-[#5A544B]">
+                        <p className="text-sm text-[var(--text-body)]">
                           报告生成中，请稍候…
                         </p>
-                        <p className="text-xs text-[#9E988E] mt-1">
+                        <p className="text-xs text-[var(--text-muted)] mt-1">
                           生成期间可浏览其他页面，请勿关闭网页
                         </p>
                       </div>
                       <button
                         onClick={() => handleDelete(r.id)}
-                        className="px-4 text-[#9E988E] hover:text-[#c4846a] transition-colors shrink-0"
+                        className="px-4 text-[var(--text-muted)] hover:text-[var(--color-error)] transition-colors shrink-0"
                         title="删除"
                       >
                         <Trash2 size={16} />
@@ -433,23 +433,23 @@ export default function ReportsPage() {
                     /* 失败状态 */
                     <div className="flex items-center">
                       <div className="flex-1 px-5 py-4">
-                        <p className="text-sm text-[#5A544B]">
+                        <p className="text-sm text-[var(--text-body)]">
                           {r.title}
                         </p>
-                        <p className="text-xs text-[#c4846a] mt-1">
+                        <p className="text-xs text-[var(--color-error)] mt-1">
                           生成失败（{r.error}）
                         </p>
                         <button
                           onClick={() => handleRetry(r)}
                           disabled={generating}
-                          className="mt-2 text-xs text-[#8FAE8B] hover:text-[#7A9E76] transition-colors font-medium disabled:opacity-40"
+                          className="mt-2 text-xs text-[var(--color-accent)] hover:text-[#7A9E76] transition-colors font-medium disabled:opacity-40"
                         >
                           重试
                         </button>
                       </div>
                       <button
                         onClick={() => handleDelete(r.id)}
-                        className="px-4 text-[#9E988E] hover:text-[#c4846a] transition-colors shrink-0"
+                        className="px-4 text-[var(--text-muted)] hover:text-[var(--color-error)] transition-colors shrink-0"
                         title="删除"
                       >
                         <Trash2 size={16} />
@@ -460,18 +460,18 @@ export default function ReportsPage() {
                     <div className="flex items-center">
                       <Link
                         href={`/reports/${r.id}`}
-                        className="flex-1 px-5 py-4 hover:bg-[#FCFAF5] transition-colors"
+                        className="flex-1 px-5 py-4 hover:bg-[var(--input-bg)] transition-colors"
                       >
-                        <p className="text-sm text-[#5A544B]">
+                        <p className="text-sm text-[var(--text-body)]">
                           {r.title}
                         </p>
-                        <p className="text-xs text-[#9E988E] mt-1">
+                        <p className="text-xs text-[var(--text-muted)] mt-1">
                           生成于{formatLabel(r.generatedAt)}
                         </p>
                       </Link>
                       <button
                         onClick={() => handleDelete(r.id)}
-                        className="no-print px-4 text-[#9E988E] hover:text-[#c4846a] transition-colors"
+                        className="no-print px-4 text-[var(--text-muted)] hover:text-[var(--color-error)] transition-colors"
                         title="删除"
                       >
                         <Trash2 size={16} />

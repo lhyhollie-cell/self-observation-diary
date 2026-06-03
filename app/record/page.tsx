@@ -91,14 +91,14 @@ function renderPoint(text: string): JSX.Element {
     const body = text.slice(colonIndex + 1).trim();
     if (body) {
       return (
-        <div className="text-sm text-[#5A544B] leading-relaxed">
-          <strong className="font-semibold text-[#3D3A34]">{cleanText(title)}</strong>
+        <div className="text-sm text-[var(--text-body)] leading-relaxed">
+          <strong className="font-semibold text-[var(--text-heading)]">{cleanText(title)}</strong>
           <span className="ml-1">：{cleanText(body)}</span>
         </div>
       );
     }
   }
-  return <span className="text-sm text-[#5A544B] leading-relaxed">{cleanText(text)}</span>;
+  return <span className="text-sm text-[var(--text-body)] leading-relaxed">{cleanText(text)}</span>;
 }
 
 // 渲染单张卡片正文：数组→分点列表，字符串→段落
@@ -115,7 +115,7 @@ function renderCardContent(content: any): JSX.Element | null {
             key={i}
             className="flex items-start gap-2.5"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#8FAE8B] mt-[9px] shrink-0" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] mt-[9px] shrink-0" />
             <div className="flex-1 min-w-0">{renderPoint(item)}</div>
           </li>
         ))}
@@ -126,7 +126,7 @@ function renderCardContent(content: any): JSX.Element | null {
   const text = typeof content === "string" ? content : "";
   if (!text.trim()) return null;
   return (
-    <p className="text-sm text-[#5A544B] leading-relaxed whitespace-pre-wrap">
+    <p className="text-sm text-[var(--text-body)] leading-relaxed whitespace-pre-wrap">
       {cleanText(text)}
     </p>
   );
@@ -146,9 +146,9 @@ function renderFeedbackCards(data: Record<string, any>) {
     if (!rendered) continue;
     const Icon = CARD_ICONS[key];
     cards.push(
-      <div key={key} className="bg-white rounded-2xl border border-[#E2DDD2] p-6">
-        <h3 className="text-xs font-medium text-[#7A746B] mb-3 tracking-wide uppercase flex items-center gap-1.5">
-          {Icon ? <Icon className="text-[#8FAE8B]" size={14} /> : null}
+      <div key={key} className="card-mist p-6">
+        <h3 className="text-xs font-medium text-[var(--text-label)] mb-3 tracking-wide uppercase flex items-center gap-1.5">
+          {Icon ? <Icon className="text-[var(--color-accent)]" size={14} /> : null}
           {label}
         </h3>
         {rendered}
@@ -160,15 +160,15 @@ function renderFeedbackCards(data: Record<string, any>) {
   const questions = data["追问"];
   if (questions && Array.isArray(questions) && questions.length > 0) {
     cards.push(
-      <div key="追问" className="bg-[#F5F1E8] rounded-2xl border border-[#E2DDD2] p-6">
-        <h3 className="text-xs font-medium text-[#7A746B] mb-3 tracking-wide uppercase flex items-center gap-1.5">
-          <MessageCircle className="text-[#8FAE8B]" size={14} />
+      <div key="追问" className="bg-[var(--tag-bg)] rounded-2xl border border-[var(--card-border)] p-6">
+        <h3 className="text-xs font-medium text-[var(--text-label)] mb-3 tracking-wide uppercase flex items-center gap-1.5">
+          <MessageCircle className="text-[var(--color-accent)]" size={14} />
           想继续追问你的
         </h3>
         <ul className="space-y-2">
           {questions.map((q: string, i: number) => (
-            <li key={i} className="text-sm text-[#5A544B] leading-relaxed flex items-start gap-2.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#8FAE8B] mt-2 shrink-0" />
+            <li key={i} className="text-sm text-[var(--text-body)] leading-relaxed flex items-start gap-2.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] mt-2 shrink-0" />
               <span>{cleanText(q)}</span>
             </li>
           ))}
@@ -519,51 +519,51 @@ export default function RecordPage() {
   const isEditMode = !!editId;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen">
       <main className="max-w-2xl mx-auto px-6 py-12">
         {/* 顶部导航 */}
         <div className="flex items-center justify-between mb-10">
           <Link
             href="/"
-            className="text-sm text-[#7A746B] hover:text-[#5A544B] transition-colors"
+            className="text-sm text-[var(--text-label)] hover:text-[var(--text-body)] transition-colors"
           >
             &larr; 返回
           </Link>
-          <h1 className="text-lg font-medium text-[#3D3A34] tracking-tight">
+          <h1 className="text-lg font-medium text-[var(--text-heading)] tracking-tight">
             {isEditMode ? "编辑记录" : "今日记录"}
           </h1>
           <div className="w-12" />
         </div>
 
         {/* 表单卡片 */}
-        <div className="bg-white rounded-2xl shadow-[0_1px_4px_0_rgba(0,0,0,0.04)] border border-[#E2DDD2] p-8 space-y-6">
+        <div className="card-mist p-8 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-[#5A544B] mb-2">
+            <label className="block text-sm font-medium text-[var(--text-body)] mb-2">
               日期
             </label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-xl border border-[#E2DDD2] bg-[#FCFAF5] px-4 py-3 text-sm text-[#3D3A34] focus:outline-none focus:border-[#A8C3A4] focus:ring-1 focus:ring-[#A8C3A4]/30 transition-colors"
+              className="w-full rounded-xl border border-[var(--card-border)] bg-[var(--input-bg)] px-4 py-3 text-sm text-[var(--text-heading)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]/30 transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#5A544B] mb-2">
-              今天做了什么？ <span className="text-[#c4846a]">*</span>
+            <label className="block text-sm font-medium text-[var(--text-body)] mb-2">
+              今天做了什么？ <span className="text-[var(--color-error)]">*</span>
             </label>
             <textarea
               value={whatHappened}
               onChange={(e) => setWhatHappened(e.target.value)}
               rows={4}
               placeholder="今天做了什么事、遇到了什么……"
-              className="w-full rounded-xl border border-[#E2DDD2] bg-[#FCFAF5] px-4 py-3 text-sm text-[#3D3A34] placeholder:text-[#9E988E] focus:outline-none focus:border-[#A8C3A4] focus:ring-1 focus:ring-[#A8C3A4]/30 transition-colors resize-y"
+              className="w-full rounded-xl border border-[var(--card-border)] bg-[var(--input-bg)] px-4 py-3 text-sm text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]/30 transition-colors resize-y"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#5A544B] mb-2">
+            <label className="block text-sm font-medium text-[var(--text-body)] mb-2">
               今天最明显的情绪/状态是什么？
             </label>
             <textarea
@@ -571,12 +571,12 @@ export default function RecordPage() {
               onChange={(e) => setEmotion(e.target.value)}
               rows={3}
               placeholder="焦虑、平静、疲惫、兴奋……或一种说不清的感觉"
-              className="w-full rounded-xl border border-[#E2DDD2] bg-[#FCFAF5] px-4 py-3 text-sm text-[#3D3A34] placeholder:text-[#9E988E] focus:outline-none focus:border-[#A8C3A4] focus:ring-1 focus:ring-[#A8C3A4]/30 transition-colors resize-y"
+              className="w-full rounded-xl border border-[var(--card-border)] bg-[var(--input-bg)] px-4 py-3 text-sm text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]/30 transition-colors resize-y"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#5A544B] mb-2">
+            <label className="block text-sm font-medium text-[var(--text-body)] mb-2">
               今天什么最消耗我？
             </label>
             <textarea
@@ -584,12 +584,12 @@ export default function RecordPage() {
               onChange={(e) => setDrain(e.target.value)}
               rows={3}
               placeholder="长时间会议、社交、重复劳动……"
-              className="w-full rounded-xl border border-[#E2DDD2] bg-[#FCFAF5] px-4 py-3 text-sm text-[#3D3A34] placeholder:text-[#9E988E] focus:outline-none focus:border-[#A8C3A4] focus:ring-1 focus:ring-[#A8C3A4]/30 transition-colors resize-y"
+              className="w-full rounded-xl border border-[var(--card-border)] bg-[var(--input-bg)] px-4 py-3 text-sm text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]/30 transition-colors resize-y"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#5A544B] mb-2">
+            <label className="block text-sm font-medium text-[var(--text-body)] mb-2">
               今天什么又恢复了我？
             </label>
             <textarea
@@ -597,12 +597,12 @@ export default function RecordPage() {
               onChange={(e) => setRestore(e.target.value)}
               rows={3}
               placeholder="散步、听音乐、独处、和某人聊天……"
-              className="w-full rounded-xl border border-[#E2DDD2] bg-[#FCFAF5] px-4 py-3 text-sm text-[#3D3A34] placeholder:text-[#9E988E] focus:outline-none focus:border-[#A8C3A4] focus:ring-1 focus:ring-[#A8C3A4]/30 transition-colors resize-y"
+              className="w-full rounded-xl border border-[var(--card-border)] bg-[var(--input-bg)] px-4 py-3 text-sm text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]/30 transition-colors resize-y"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#5A544B] mb-2">
+            <label className="block text-sm font-medium text-[var(--text-body)] mb-2">
               今天有没有一个反复在意的瞬间？
             </label>
             <textarea
@@ -610,12 +610,12 @@ export default function RecordPage() {
               onChange={(e) => setMoment(e.target.value)}
               rows={3}
               placeholder="某个对话后一直回想、一个念头反复出现……"
-              className="w-full rounded-xl border border-[#E2DDD2] bg-[#FCFAF5] px-4 py-3 text-sm text-[#3D3A34] placeholder:text-[#9E988E] focus:outline-none focus:border-[#A8C3A4] focus:ring-1 focus:ring-[#A8C3A4]/30 transition-colors resize-y"
+              className="w-full rounded-xl border border-[var(--card-border)] bg-[var(--input-bg)] px-4 py-3 text-sm text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]/30 transition-colors resize-y"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#5A544B] mb-2">
+            <label className="block text-sm font-medium text-[var(--text-body)] mb-2">
               今天我更像？
             </label>
             <input
@@ -623,12 +623,12 @@ export default function RecordPage() {
               value={mode}
               onChange={(e) => setMode(e.target.value)}
               placeholder="推进 / 维持 / 逃避 / 恢复……或你自己的词"
-              className="w-full rounded-xl border border-[#E2DDD2] bg-[#FCFAF5] px-4 py-3 text-sm text-[#3D3A34] placeholder:text-[#9E988E] focus:outline-none focus:border-[#A8C3A4] focus:ring-1 focus:ring-[#A8C3A4]/30 transition-colors"
+              className="w-full rounded-xl border border-[var(--card-border)] bg-[var(--input-bg)] px-4 py-3 text-sm text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]/30 transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#5A544B] mb-2">
+            <label className="block text-sm font-medium text-[var(--text-body)] mb-2">
               今天有没有一个值得记录的、「对自己」的观察？
             </label>
             <textarea
@@ -636,12 +636,12 @@ export default function RecordPage() {
               onChange={(e) => setObservation(e.target.value)}
               rows={3}
               placeholder="一个有趣的想法、对自己的新发现、注意到的一个习惯……"
-              className="w-full rounded-xl border border-[#E2DDD2] bg-[#FCFAF5] px-4 py-3 text-sm text-[#3D3A34] placeholder:text-[#9E988E] focus:outline-none focus:border-[#A8C3A4] focus:ring-1 focus:ring-[#A8C3A4]/30 transition-colors resize-y"
+              className="w-full rounded-xl border border-[var(--card-border)] bg-[var(--input-bg)] px-4 py-3 text-sm text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]/30 transition-colors resize-y"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#5A544B] mb-2">
+            <label className="block text-sm font-medium text-[var(--text-body)] mb-2">
               现在的你最需要什么？
             </label>
             <textarea
@@ -649,18 +649,18 @@ export default function RecordPage() {
               onChange={(e) => setNeedNow(e.target.value)}
               rows={2}
               placeholder="休息、被理解、一个具体的答案、放下某件事……"
-              className="w-full rounded-xl border border-[#E2DDD2] bg-[#FCFAF5] px-4 py-3 text-sm text-[#3D3A34] placeholder:text-[#9E988E] focus:outline-none focus:border-[#A8C3A4] focus:ring-1 focus:ring-[#A8C3A4]/30 transition-colors resize-y"
+              className="w-full rounded-xl border border-[var(--card-border)] bg-[var(--input-bg)] px-4 py-3 text-sm text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]/30 transition-colors resize-y"
             />
           </div>
 
           {errorMsg && (
-            <p className="text-sm text-[#c4846a]">{errorMsg}</p>
+            <p className="text-sm text-[var(--color-error)]">{errorMsg}</p>
           )}
 
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full py-3.5 bg-[#A8C3A4] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#8FAE8B] transition-colors disabled:opacity-40"
+            className="w-full py-3.5 bg-[var(--color-primary)] text-white rounded-xl text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors disabled:opacity-40"
           >
             {saving ? "保存中……" : isEditMode ? "保存修改" : "保存记录"}
           </button>
@@ -669,8 +669,8 @@ export default function RecordPage() {
         {/* 编辑模式：旧反馈 */}
         {isEditMode && oldFeedback && !feedbackText && (
           <section className="mt-10">
-            <h2 className="text-sm font-medium text-[#7A746B] mb-4 flex items-center gap-2">
-              <span className="w-0.5 h-4 bg-[#D1CBC0] rounded-full" />
+            <h2 className="text-sm font-medium text-[var(--text-label)] mb-4 flex items-center gap-2">
+              <span className="w-0.5 h-4 bg-[var(--divider)] rounded-full" />
               上一次 AI 反馈
             </h2>
             <div className="space-y-4">
@@ -680,7 +680,7 @@ export default function RecordPage() {
                   return renderFeedbackCards(json);
                 }
                 return (
-                  <div className="bg-[#F5F1E8] rounded-2xl p-6 text-sm text-[#5A544B] leading-relaxed whitespace-pre-wrap">
+                  <div className="bg-[var(--tag-bg)] rounded-2xl p-6 text-sm text-[var(--text-body)] leading-relaxed whitespace-pre-wrap">
                     {oldFeedback}
                   </div>
                 );
@@ -692,8 +692,8 @@ export default function RecordPage() {
         {/* AI 即时反馈 */}
         {showFeedback && (
           <section className="mt-12">
-            <h2 className="text-sm font-medium text-[#7A746B] mb-4 flex items-center gap-2">
-              <span className="w-0.5 h-4 bg-[#D1CBC0] rounded-full" />
+            <h2 className="text-sm font-medium text-[var(--text-label)] mb-4 flex items-center gap-2">
+              <span className="w-0.5 h-4 bg-[var(--divider)] rounded-full" />
               {hasRegenerated
                 ? "已重新生成反馈"
                 : isEditMode
@@ -709,13 +709,13 @@ export default function RecordPage() {
                   </div>
                 </>
               ) : feedbacking ? (
-                <div className="bg-white rounded-2xl shadow-[0_1px_4px_0_rgba(0,0,0,0.04)] border border-[#E2DDD2] p-8 text-center">
+                <div className="card-mist p-8 text-center">
                   <div className="flex items-center justify-center gap-1.5 mb-3">
-                    <span className="w-2 h-2 rounded-full bg-[#D1CBC0] animate-pulse" style={{ animationDelay: "0ms" }} />
-                    <span className="w-2 h-2 rounded-full bg-[#D1CBC0] animate-pulse" style={{ animationDelay: "300ms" }} />
-                    <span className="w-2 h-2 rounded-full bg-[#D1CBC0] animate-pulse" style={{ animationDelay: "600ms" }} />
+                    <span className="w-2 h-2 rounded-full bg-[var(--divider)] animate-pulse" style={{ animationDelay: "0ms" }} />
+                    <span className="w-2 h-2 rounded-full bg-[var(--divider)] animate-pulse" style={{ animationDelay: "300ms" }} />
+                    <span className="w-2 h-2 rounded-full bg-[var(--divider)] animate-pulse" style={{ animationDelay: "600ms" }} />
                   </div>
-                  <p className="text-sm text-[#7A746B]">正在梳理你的记录，大约需要 1-3 分钟</p>
+                  <p className="text-sm text-[var(--text-label)]">正在梳理你的记录，大约需要 1-3 分钟</p>
                 </div>
               ) : feedbackText ? (
                 // 即使 feedbackData 为 null，也尝试解析 JSON 渲染卡片
@@ -730,8 +730,8 @@ export default function RecordPage() {
                     );
                   }
                   return (
-                    <div className="bg-white rounded-2xl shadow-[0_1px_4px_0_rgba(0,0,0,0.04)] border border-[#E2DDD2] p-6">
-                      <div className="text-sm text-[#5A544B] leading-relaxed whitespace-pre-wrap">
+                    <div className="card-mist p-6">
+                      <div className="text-sm text-[var(--text-body)] leading-relaxed whitespace-pre-wrap">
                         {feedbackText}
                         <div ref={feedbackEndRef} />
                       </div>
@@ -739,13 +739,13 @@ export default function RecordPage() {
                   );
                 })()
               ) : (
-                <p className="text-sm text-[#7A746B]">暂无反馈</p>
+                <p className="text-sm text-[var(--text-label)]">暂无反馈</p>
               )}
 
               {/* 追问输入 — 仅当未澄清、未提交时显示 */}
               {feedbackData && !clarified && !hasExistingClarification() && !clarifying && (
-                <div className="mt-8 pt-6 border-t border-[#E2DDD2]">
-                  <label className="block text-sm text-[#7A746B] mb-3">
+                <div className="mt-8 pt-6 border-t border-[var(--card-border)]">
+                  <label className="block text-sm text-[var(--text-label)] mb-3">
                     想对 AI 的反馈做出回应？
                   </label>
                   <textarea
@@ -753,12 +753,12 @@ export default function RecordPage() {
                     onChange={(e) => setClarification(e.target.value)}
                     rows={2}
                     placeholder="例如：不是焦虑，是无聊……"
-                    className="w-full rounded-xl border border-[#E2DDD2] bg-[#FCFAF5] px-4 py-3 text-sm text-[#3D3A34] placeholder:text-[#9E988E] focus:outline-none focus:border-[#A8C3A4] focus:ring-1 focus:ring-[#A8C3A4]/30 transition-colors resize-y"
+                    className="w-full rounded-xl border border-[var(--card-border)] bg-[var(--input-bg)] px-4 py-3 text-sm text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]/30 transition-colors resize-y"
                   />
                   <button
                     onClick={handleClarify}
                     disabled={!clarification.trim()}
-                    className="mt-3 px-5 py-2 bg-[#A8C3A4] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#8FAE8B] transition-colors disabled:opacity-40"
+                    className="mt-3 px-5 py-2 bg-[var(--color-primary)] text-white rounded-xl text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors disabled:opacity-40"
                   >
                     提交回应
                   </button>
@@ -767,31 +767,31 @@ export default function RecordPage() {
 
               {/* 澄清加载动画 */}
               {clarifying && (
-                <div className="bg-white rounded-2xl shadow-[0_1px_4px_0_rgba(0,0,0,0.04)] border border-[#E2DDD2] p-8 text-center">
+                <div className="card-mist p-8 text-center">
                   <div className="flex items-center justify-center gap-1.5 mb-3">
-                    <span className="w-2 h-2 rounded-full bg-[#D1CBC0] animate-pulse" style={{ animationDelay: "0ms" }} />
-                    <span className="w-2 h-2 rounded-full bg-[#D1CBC0] animate-pulse" style={{ animationDelay: "300ms" }} />
-                    <span className="w-2 h-2 rounded-full bg-[#D1CBC0] animate-pulse" style={{ animationDelay: "600ms" }} />
+                    <span className="w-2 h-2 rounded-full bg-[var(--divider)] animate-pulse" style={{ animationDelay: "0ms" }} />
+                    <span className="w-2 h-2 rounded-full bg-[var(--divider)] animate-pulse" style={{ animationDelay: "300ms" }} />
+                    <span className="w-2 h-2 rounded-full bg-[var(--divider)] animate-pulse" style={{ animationDelay: "600ms" }} />
                   </div>
-                  <p className="text-sm text-[#7A746B]">已经收到您的反馈，正在调整理解…</p>
+                  <p className="text-sm text-[var(--text-label)]">已经收到您的反馈，正在调整理解…</p>
                 </div>
               )}
 
               {/* 修正理解卡片 */}
               {revisedText && (
-                <div className="bg-white rounded-2xl border border-[#E2DDD2] p-6">
-                  <h3 className="text-xs font-medium text-[#7A746B] mb-3 tracking-wide uppercase flex items-center gap-1.5">
-                    <MessageCircle className="text-[#8FAE8B]" size={14} />
+                <div className="card-mist p-6">
+                  <h3 className="text-xs font-medium text-[var(--text-label)] mb-3 tracking-wide uppercase flex items-center gap-1.5">
+                    <MessageCircle className="text-[var(--color-accent)]" size={14} />
                     理解与回应
                   </h3>
-                  <p className="text-sm text-[#5A544B] leading-relaxed whitespace-pre-wrap">
+                  <p className="text-sm text-[var(--text-body)] leading-relaxed whitespace-pre-wrap">
                     {revisedText}
                   </p>
                 </div>
               )}
 
               {clarified && !clarifying && (
-                <p className="mt-4 text-xs text-[#7A746B] text-center">
+                <p className="mt-4 text-xs text-[var(--text-label)] text-center">
                   已收到你的回应
                 </p>
               )}
@@ -801,7 +801,7 @@ export default function RecordPage() {
               <button
                 onClick={() => router.push("/")}
                 disabled={clarifying}
-                className="px-6 py-2.5 bg-[#A8C3A4] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#8FAE8B] transition-colors disabled:opacity-40"
+                className="px-6 py-2.5 bg-[var(--color-primary)] text-white rounded-xl text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors disabled:opacity-40"
               >
                 完成，返回主页
               </button>
@@ -811,20 +811,20 @@ export default function RecordPage() {
         {/* 覆盖确认弹框 */}
         {showOverwriteConfirm && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
-            <div className="bg-white rounded-2xl p-6 max-w-sm mx-4 shadow-xl">
-              <p className="text-sm text-[#5A544B] mb-6 leading-relaxed">
+            <div className="card-mist p-6 max-w-sm mx-4 shadow-xl">
+              <p className="text-sm text-[var(--text-body)] mb-6 leading-relaxed">
                 重新保存记录会覆盖之前的分析，是否继续？
               </p>
               <div className="flex gap-3 justify-end">
                 <button
                   onClick={() => setShowOverwriteConfirm(false)}
-                  className="px-5 py-2 text-sm text-[#FAF8F3] bg-[#D9C2A3] rounded-xl hover:bg-[#CBB596] transition-colors"
+                  className="px-5 py-2 text-sm text-white bg-[var(--color-secondary)] rounded-xl hover:bg-[var(--color-secondary-hover)] transition-colors"
                 >
                   取消
                 </button>
                 <button
                   onClick={handleConfirmOverwrite}
-                  className="px-5 py-2 text-sm text-[#FAF8F3] bg-[#A8C3A4] rounded-xl hover:bg-[#8FAE8B] transition-colors"
+                  className="px-5 py-2 text-sm text-white bg-[var(--color-primary)] rounded-xl hover:bg-[var(--color-primary-hover)] transition-colors"
                 >
                   继续
                 </button>

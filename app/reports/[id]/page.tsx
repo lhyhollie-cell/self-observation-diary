@@ -76,14 +76,14 @@ function renderPoint(text: string): JSX.Element {
     const body = text.slice(colonIndex + 1).trim();
     if (body) {
       return (
-        <div className="text-sm text-[#5A544B] leading-relaxed">
-          <strong className="font-semibold text-[#3D3A34]">{cleanText(title)}</strong>
+        <div className="text-sm text-[var(--text-body)] leading-relaxed">
+          <strong className="font-semibold text-[var(--text-heading)]">{cleanText(title)}</strong>
           <span className="ml-1">：{cleanText(body)}</span>
         </div>
       );
     }
   }
-  return <span className="text-sm text-[#5A544B] leading-relaxed">{cleanText(text)}</span>;
+  return <span className="text-sm text-[var(--text-body)] leading-relaxed">{cleanText(text)}</span>;
 }
 
 function renderCardContent(content: any): JSX.Element | null {
@@ -100,7 +100,7 @@ function renderCardContent(content: any): JSX.Element | null {
             key={i}
             className="flex items-start gap-2.5"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#8FAE8B] mt-[9px] shrink-0" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] mt-[9px] shrink-0" />
             <div className="flex-1 min-w-0">{renderPoint(item)}</div>
           </li>
         ))}
@@ -112,7 +112,7 @@ function renderCardContent(content: any): JSX.Element | null {
   const text = typeof content === "string" ? content : "";
   if (!text.trim()) return null;
   return (
-    <p className="text-sm text-[#5A544B] leading-relaxed whitespace-pre-wrap">
+    <p className="text-sm text-[var(--text-body)] leading-relaxed whitespace-pre-wrap">
       {cleanText(text)}
     </p>
   );
@@ -160,9 +160,9 @@ function renderReportCards(rawData: any): JSX.Element[] | null {
 
     const Icon = REPORT_ICONS[key];
     cards.push(
-      <div key={key} className="card bg-white rounded-2xl border border-[#E2DDD2] p-6">
-        <h3 className="text-xs font-medium text-[#7A746B] mb-3 tracking-wide uppercase flex items-center gap-1.5">
-          {Icon ? <Icon className="text-[#8FAE8B]" size={14} /> : null}
+      <div key={key} className="card-mist p-6">
+        <h3 className="text-xs font-medium text-[var(--text-label)] mb-3 tracking-wide uppercase flex items-center gap-1.5">
+          {Icon ? <Icon className="text-[var(--color-accent)]" size={14} /> : null}
           {label}
         </h3>
         {rendered}
@@ -202,23 +202,23 @@ export default function ReportDetailPage() {
     } else {
       setNotFound(true);
     }
-    return () => { document.title = "长期自我观察"; };
+    return () => { document.title = "自我观察日记"; };
   }, [id]);
 
   if (notFound) {
     return (
-      <div className="min-h-screen bg-[#FAF8F3]">
+      <div className="min-h-screen">
         <main className="max-w-2xl mx-auto px-6 py-12">
           <div className="mb-10">
             <Link
               href="/reports"
-              className="text-sm text-[#7A746B] hover:text-[#5A544B] transition-colors"
+              className="text-sm text-[var(--text-label)] hover:text-[var(--text-body)] transition-colors"
             >
               ← 返回报告列表
             </Link>
           </div>
-          <div className="bg-white rounded-2xl border border-[#E2DDD2] p-10 text-center">
-            <p className="text-sm text-[#7A746B]">报告未找到</p>
+          <div className="card-mist p-10 text-center">
+            <p className="text-sm text-[var(--text-label)]">报告未找到</p>
           </div>
         </main>
       </div>
@@ -227,9 +227,9 @@ export default function ReportDetailPage() {
 
   if (!report) {
     return (
-      <div className="min-h-screen bg-[#FAF8F3]">
+      <div className="min-h-screen">
         <main className="max-w-2xl mx-auto px-6 py-12">
-          <div className="text-sm text-[#7A746B]">加载中…</div>
+          <div className="text-sm text-[var(--text-label)]">加载中…</div>
         </main>
       </div>
     );
@@ -240,12 +240,12 @@ export default function ReportDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen">
       <style>{`
         @media print {
           .no-print { display: none !important; }
-          body { background: #FAF8F3 !important; }
-          .card { break-inside: avoid; border: 1px solid #E2DDD2 !important; box-shadow: none !important; }
+          body { background: var(--bg-top) !important; }
+          .card-mist { break-inside: avoid; border: 1px solid var(--card-border) !important; box-shadow: none !important; }
         }
       `}</style>
       <main className="max-w-2xl mx-auto px-6 py-12">
@@ -253,7 +253,7 @@ export default function ReportDetailPage() {
         <div className="no-print mb-10">
           <Link
             href="/reports"
-            className="text-sm text-[#7A746B] hover:text-[#5A544B] transition-colors"
+            className="text-sm text-[var(--text-label)] hover:text-[var(--text-body)] transition-colors"
           >
             ← 返回报告列表
           </Link>
@@ -261,15 +261,15 @@ export default function ReportDetailPage() {
 
         {/* 标题区 */}
         <div className="text-center mb-10">
-          <h1 className="text-2xl font-medium text-[#3D3A34] tracking-tight">
+          <h1 className="text-2xl font-medium text-[var(--text-heading)] tracking-tight">
             {report.title}
           </h1>
-          <p className="mt-2 text-sm text-[#7A746B]">
+          <p className="mt-2 text-sm text-[var(--text-label)]">
             生成于{formatLabel(report.generatedAt)}
           </p>
           <button
             onClick={handlePrint}
-            className="no-print mt-4 px-5 py-2 bg-[#A8C3A4] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#8FAE8B] transition-colors"
+            className="no-print mt-4 px-5 py-2 bg-[var(--color-primary)] text-white rounded-xl text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors"
           >
             导出 PDF
           </button>
@@ -278,8 +278,8 @@ export default function ReportDetailPage() {
         {/* 报告正文卡片 */}
         <div className="space-y-4" id="report-content">
           {report.data ? renderReportCards(report.data) : (
-            <div className="bg-white rounded-2xl border border-[#E2DDD2] p-10 text-center">
-              <p className="text-sm text-[#7A746B]">报告内容暂不可用</p>
+            <div className="card-mist p-10 text-center">
+              <p className="text-sm text-[var(--text-label)]">报告内容暂不可用</p>
             </div>
           )}
         </div>

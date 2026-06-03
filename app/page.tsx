@@ -78,7 +78,7 @@ function renderCardText(content: string) {
   const text = typeof content === "string" ? content : "";
   if (!text.trim()) return null;
   return (
-    <p className="text-sm text-[#5A544B] leading-relaxed whitespace-pre-wrap">
+    <p className="text-sm text-[var(--text-body)] leading-relaxed whitespace-pre-wrap">
       {cleanText(text)}
     </p>
   );
@@ -95,9 +95,9 @@ function renderReportCards(data: Record<string, any>) {
     if (!rendered) continue;
     const Icon = REPORT_ICONS[key];
     cards.push(
-      <div key={key} className="bg-white rounded-2xl border border-[#E2DDD2] p-6">
-        <h3 className="text-xs font-medium text-[#7A746B] mb-3 tracking-wide uppercase flex items-center gap-1.5">
-          {Icon ? <Icon className="text-[#8FAE8B]" size={14} /> : null}
+      <div key={key} className="card-mist p-6">
+        <h3 className="text-xs font-medium text-[var(--text-label)] mb-3 tracking-wide uppercase flex items-center gap-1.5">
+          {Icon ? <Icon className="text-[var(--color-accent)]" size={14} /> : null}
           {label}
         </h3>
         {rendered}
@@ -202,14 +202,14 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen">
       <main className="max-w-2xl mx-auto px-6 py-12">
         {/* 标题区 */}
         <div className="text-center mb-10">
-          <h1 className="text-2xl font-medium text-[#3D3A34] tracking-tight">
-            长期自我观察
+          <h1 className="text-2xl font-medium text-[var(--text-heading)] tracking-tight">
+            自我观察日记
           </h1>
-          <p className="mt-2 text-sm text-[#7A746B]">
+          <p className="mt-2 text-sm text-[var(--text-label)]">
             {records.length > 0
               ? `共 ${records.length} 条记录`
               : "开始记录你的每一天"}
@@ -220,13 +220,13 @@ export default function Home() {
         <div className="flex flex-col gap-3">
           <Link
             href="/record"
-            className="w-full text-center px-6 py-3.5 bg-[#A8C3A4] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#8FAE8B] transition-colors"
+            className="w-full text-center px-6 py-3.5 bg-[var(--color-primary)] text-white rounded-xl text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors"
           >
             + 今日记录
           </Link>
           <Link
             href="/reports"
-            className="w-full block text-center px-6 py-3 bg-[#D9C2A3] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#CBB596] transition-colors"
+            className="w-full block text-center px-6 py-3 bg-[var(--color-secondary)] text-white rounded-xl text-sm font-medium hover:bg-[var(--color-secondary-hover)] transition-colors"
           >
             查看阶段报告
           </Link>
@@ -235,14 +235,14 @@ export default function Home() {
         {/* 阶段报告 */}
         {(reportData || reportError) && (
           <section className="mt-12">
-            <h2 className="text-sm font-medium text-[#7A746B] mb-4 flex items-center gap-2">
-              <span className="w-0.5 h-4 bg-[#D1CBC0] rounded-full" />
+            <h2 className="text-sm font-medium text-[var(--text-label)] mb-4 flex items-center gap-2">
+              <span className="w-0.5 h-4 bg-[var(--divider)] rounded-full" />
               阶段报告
             </h2>
             <div className="space-y-4">
               {reportError ? (
-                <div className="bg-white rounded-2xl border border-[#E2DDD2] p-6">
-                  <p className="text-sm text-[#5A544B]">{reportError}</p>
+                <div className="card-mist p-6">
+                  <p className="text-sm text-[var(--text-body)]">{reportError}</p>
                 </div>
               ) : reportData ? (
                 renderReportCards(reportData)
@@ -254,98 +254,98 @@ export default function Home() {
 
         {/* 历史记录 */}
         <section className="mt-12">
-          <h2 className="text-sm font-medium text-[#7A746B] mb-4 flex items-center gap-2">
-            <span className="w-0.5 h-4 bg-[#D1CBC0] rounded-full" />
+          <h2 className="text-sm font-medium text-[var(--text-label)] mb-4 flex items-center gap-2">
+            <span className="w-0.5 h-4 bg-[var(--divider)] rounded-full" />
             历史记录
           </h2>
 
           {records.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-[0_1px_4px_0_rgba(0,0,0,0.04)] border border-[#E2DDD2] p-10 text-center">
-              <p className="text-sm text-[#7A746B]">还没有记录，点击上方按钮开始。</p>
+            <div className="card-mist p-10 text-center">
+              <p className="text-sm text-[var(--text-label)]">还没有记录，点击上方按钮开始。</p>
             </div>
           ) : (
             <div className="space-y-3">
               {records.map((r) => (
                 <div
                   key={r.id}
-                  className="bg-white rounded-2xl shadow-[0_1px_4px_0_rgba(0,0,0,0.04)] border border-[#E2DDD2] overflow-hidden"
+                  className="card-mist overflow-hidden"
                 >
                   <button
-                    className="w-full text-left px-5 py-4 flex items-center gap-3 hover:bg-[#FCFAF5] transition-colors"
+                    className="w-full text-left px-5 py-4 flex items-center gap-3 hover:bg-white/40 transition-colors"
                     onClick={() =>
                       setExpandedId(expandedId === r.id ? null : r.id)
                     }
                   >
-                    <span className="text-xs text-[#FAF8F3] bg-[#D9C2A3] px-2.5 py-1 rounded-lg shrink-0">
+                    <span className="text-xs text-white bg-[var(--color-secondary)] px-2.5 py-1 rounded-lg shrink-0">
                       {r.date}
                     </span>
-                    <span className="text-sm text-[#5A544B] truncate flex-1">
+                    <span className="text-sm text-[var(--text-body)] truncate flex-1">
                       {r.summary || preview(r.whatHappened || r.emotion || r.observation || r.drain || "")}
                     </span>
-                    <span className="text-xs text-[#7A746B] shrink-0">
+                    <span className="text-xs text-[var(--text-label)] shrink-0">
                       {expandedId === r.id ? "收起" : "展开"}
                     </span>
                   </button>
 
                   {expandedId === r.id && (
-                    <div className="px-5 pb-5 border-t border-[#F5F1E8]">
-                      <div className="pt-4 text-sm text-[#5A544B] space-y-3">
+                    <div className="px-5 pb-5 border-t border-[var(--tag-bg)]">
+                      <div className="pt-4 text-sm text-[var(--text-body)] space-y-3">
                         {r.whatHappened && (
                           <div>
-                            <p className="text-xs font-medium text-[#7A746B] mb-1">今天发生了什么</p>
+                            <p className="text-xs font-medium text-[var(--text-label)] mb-1">今天发生了什么</p>
                             <p className="whitespace-pre-wrap leading-relaxed">{r.whatHappened}</p>
                           </div>
                         )}
                         {r.emotion && (
                           <div>
-                            <p className="text-xs font-medium text-[#7A746B] mb-1">情绪/状态</p>
+                            <p className="text-xs font-medium text-[var(--text-label)] mb-1">情绪/状态</p>
                             <p className="whitespace-pre-wrap">{r.emotion}</p>
                           </div>
                         )}
                         {r.drain && (
                           <div>
-                            <p className="text-xs font-medium text-[#7A746B] mb-1">今天什么最消耗我</p>
+                            <p className="text-xs font-medium text-[var(--text-label)] mb-1">今天什么最消耗我</p>
                             <p className="whitespace-pre-wrap">{r.drain}</p>
                           </div>
                         )}
                         {r.restore && (
                           <div>
-                            <p className="text-xs font-medium text-[#7A746B] mb-1">今天什么又恢复了我</p>
+                            <p className="text-xs font-medium text-[var(--text-label)] mb-1">今天什么又恢复了我</p>
                             <p className="whitespace-pre-wrap">{r.restore}</p>
                           </div>
                         )}
                         {r.moment && (
                           <div>
-                            <p className="text-xs font-medium text-[#7A746B] mb-1">反复在意的瞬间</p>
+                            <p className="text-xs font-medium text-[var(--text-label)] mb-1">反复在意的瞬间</p>
                             <p className="whitespace-pre-wrap">{r.moment}</p>
                           </div>
                         )}
                         {r.mode && (
                           <div>
-                            <p className="text-xs font-medium text-[#7A746B] mb-1">今天我更像</p>
+                            <p className="text-xs font-medium text-[var(--text-label)] mb-1">今天我更像</p>
                             <p>{r.mode}</p>
                           </div>
                         )}
                         {r.observation && (
                           <div>
-                            <p className="text-xs font-medium text-[#7A746B] mb-1">小观察</p>
+                            <p className="text-xs font-medium text-[var(--text-label)] mb-1">小观察</p>
                             <p className="whitespace-pre-wrap">{r.observation}</p>
                           </div>
                         )}
                         {r.needNow && (
                           <div>
-                            <p className="text-xs font-medium text-[#7A746B] mb-1">现在最需要</p>
+                            <p className="text-xs font-medium text-[var(--text-label)] mb-1">现在最需要</p>
                             <p className="whitespace-pre-wrap">{r.needNow}</p>
                           </div>
                         )}
 
                         {/* AI 反馈摘要 */}
                         {r.feedbackText && (
-                          <div className="bg-[#F5F1E8] rounded-xl p-4 -mx-1">
-                            <p className="text-xs font-medium text-[#7A746B] mb-2">
+                          <div className="bg-[var(--tag-bg)] rounded-xl p-4 -mx-1">
+                            <p className="text-xs font-medium text-[var(--text-label)] mb-2">
                               AI 反馈
                             </p>
-                            <p className="text-sm text-[#5A544B] leading-relaxed line-clamp-3">
+                            <p className="text-sm text-[var(--text-body)] leading-relaxed line-clamp-3">
                               {(() => {
                                 try {
                                   const start = r.feedbackText.indexOf("{");
@@ -363,25 +363,25 @@ export default function Home() {
                           </div>
                         )}
                         {r.clarification && (
-                          <div className="bg-[#F5F1E8] rounded-xl p-4 -mx-1">
-                            <p className="text-xs font-medium text-[#7A746B] mb-1">
+                          <div className="bg-[var(--tag-bg)] rounded-xl p-4 -mx-1">
+                            <p className="text-xs font-medium text-[var(--text-label)] mb-1">
                               你的回应
                             </p>
-                            <p className="text-sm text-[#5A544B]">{r.clarification}</p>
+                            <p className="text-sm text-[var(--text-body)]">{r.clarification}</p>
                           </div>
                         )}
                       </div>
 
-                      <div className="mt-4 pt-3 border-t border-[#F5F1E8] flex items-center gap-4">
+                      <div className="mt-4 pt-3 border-t border-[var(--tag-bg)] flex items-center gap-4">
                         <Link
                           href={`/record?id=${r.id}`}
-                          className="text-xs text-[#7A746B] hover:text-[#3D3A34] transition-colors"
+                          className="text-xs text-[var(--text-label)] hover:text-[var(--text-heading)] transition-colors"
                         >
                           编辑
                         </Link>
                         <button
                           onClick={() => handleDelete(r.id)}
-                          className="text-xs text-[#7A746B] hover:text-[#c4846a] transition-colors"
+                          className="text-xs text-[var(--text-label)] hover:text-[var(--color-error)] transition-colors"
                         >
                           删除
                         </button>
@@ -394,7 +394,7 @@ export default function Home() {
           )}
         </section>
 
-        <footer className="mt-16 text-xs text-[#9E988E] text-center leading-relaxed">
+        <footer className="mt-16 text-xs text-[var(--text-muted)] text-center leading-relaxed">
           本工具为个人自我观察辅助，非心理咨询或诊断。<br />
           数据仅保存在你的浏览器本地。
         </footer>

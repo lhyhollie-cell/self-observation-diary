@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "长期自我观察",
+  title: "自我观察日记",
   description: "个人自我观察与记录工具",
 };
 
