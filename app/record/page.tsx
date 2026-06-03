@@ -50,7 +50,7 @@ function cleanText(text: string): string {
 }
 
 // 从文本中提取 JSON 对象
-function extractJSON(text: string): Record<string, any> | null {
+function extractJSON(text: string): { [key: string]: any } | null {
   // 去掉 ```json ... ``` 包裹
   let cleaned = text.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
   // 找到第一个 { 和最后一个 }
@@ -65,7 +65,7 @@ function extractJSON(text: string): Record<string, any> | null {
 }
 
 // 卡片字段标题映射
-const CARD_LABELS: Record<string, string> = {
+const CARD_LABELS: { [key: string]: string } = {
   "关键信号": "本次记录的关键信号",
   "情绪与需求": "情绪与需求",
   "行动与卡点": "行动与卡点",
@@ -133,7 +133,7 @@ function renderCardContent(content: any): JSX.Element | null {
 }
 
 // 渲染 JSON 反馈为多卡片
-function renderFeedbackCards(data: Record<string, any>) {
+function renderFeedbackCards(data: { [key: string]: any }) {
   const cards: JSX.Element[] = [];
 
   // 常规卡片（外层循环：每个字段一张独立卡片）
@@ -199,7 +199,7 @@ export default function RecordPage() {
 
   // AI 反馈
   const [feedbacking, setFeedbacking] = useState(false);
-  const [feedbackData, setFeedbackData] = useState<Record<string, any> | null>(null);
+  const [feedbackData, setFeedbackData] = useState<{ [key: string]: any } | null>(null);
   const [feedbackText, setFeedbackText] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
   const feedbackEndRef = useRef<HTMLDivElement>(null);
