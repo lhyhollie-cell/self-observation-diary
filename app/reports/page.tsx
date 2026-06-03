@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import { Trash2 } from "lucide-react";
 
 interface Record {
   id: string;
@@ -278,6 +279,13 @@ export default function ReportsPage() {
     (r) => r.data === null && !r.error
   );
 
+  const handleDelete = (id: string) => {
+    if (!window.confirm("确定删除这份报告吗？")) return;
+    const updated = loadReports().filter((r) => r.id !== id);
+    localStorage.setItem(REPORTS_KEY, JSON.stringify(updated));
+    refresh();
+  };
+
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
       <main className="max-w-2xl mx-auto px-6 py-12">
@@ -354,24 +362,36 @@ export default function ReportsPage() {
               </div>
             </div>
 
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleSelectAll}
+                className="flex-1 px-4 py-2.5 bg-[#E6F0E4] text-[#6B8F67] rounded-xl text-sm font-medium border border-[#C8DDC4] hover:bg-[#D8E8D4] transition-colors"
+              >
+                选中全部记录
+              </button>
+              <button
+                onClick={() => {
+                  setStartDate("");
+                  setEndDate("");
+                  setValidationError("");
+                }}
+                className="flex-1 px-4 py-2.5 border border-[#E2DDD2] text-[#7A746B] rounded-xl text-sm font-medium hover:bg-[#F5F1E8] transition-colors"
+              >
+                清除日期
+              </button>
+            </div>
+
             <button
-              onClick={handleSelectAll}
-              className="text-xs text-[#8FAE8B] hover:text-[#7A9E76] transition-colors font-medium"
+              onClick={handleGenerate}
+              disabled={generating}
+              className="w-full px-6 py-3 bg-[#A8C3A4] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#8FAE8B] transition-colors disabled:opacity-40"
             >
-              + 全选（全部记录）
+              {generating ? "生成中……" : "确认生成"}
             </button>
 
             {validationError && (
               <p className="text-xs text-[#c4846a]">{validationError}</p>
             )}
-
-            <button
-              onClick={handleGenerate}
-              disabled={generating}
-              className="w-full px-6 py-2.5 bg-[#A8C3A4] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#8FAE8B] transition-colors disabled:opacity-40"
-            >
-              {generating ? "生成中……" : "确认生成"}
-            </button>
           </div>
         )}
 
@@ -392,40 +412,70 @@ export default function ReportsPage() {
                 >
                   {r.data === null && !r.error ? (
                     /* 生成中状态 */
-                    <div className="px-5 py-4 opacity-50">
-                      <p className="text-sm text-[#5A544B]">
-                        报告生成中，请稍候…
-                      </p>
-                      <p className="text-xs text-[#9E988E] mt-1">
-                        生成期间可浏览其他页面，请勿关闭网页
-                      </p>
+                    <div className="flex items-center">
+                      <div className="flex-1 px-5 py-4 opacity-50">
+                        <p className="text-sm text-[#5A544B]">
+                          报告生成中，请稍候…
+                        </p>
+                        <p className="text-xs text-[#9E988E] mt-1">
+                          生成期间可浏览其他页面，请勿关闭网页
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleDelete(r.id)}
+                        className="px-4 text-[#9E988E] hover:text-[#c4846a] transition-colors shrink-0"
+                        title="删除"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   ) : r.error ? (
                     /* 失败状态 */
-                    <div className="px-5 py-4">
-                      <p className="text-sm text-[#5A544B]">
-                        {r.title}
-                      </p>
-                      <p className="text-xs text-[#c4846a] mt-1">
-                        生成失败（{r.error}）
-                      </p>
+                    <div className="flex items-center">
+                      <div className="flex-1 px-5 py-4">
+                        <p className="text-sm text-[#5A544B]">
+                          {r.title}
+                        </p>
+                        <p className="text-xs text-[#c4846a] mt-1">
+                          生成失败（{r.error}）
+                        </p>
+                        <button
+                          onClick={() => handleRetry(r)}
+                          disabled={generating}
+                          className="mt-2 text-xs text-[#8FAE8B] hover:text-[#7A9E76] transition-colors font-medium disabled:opacity-40"
+                        >
+                          重试
+                        </button>
+                      </div>
                       <button
-                        onClick={() => handleRetry(r)}
-                        disabled={generating}
-                        className="mt-2 text-xs text-[#8FAE8B] hover:text-[#7A9E76] transition-colors font-medium disabled:opacity-40"
+                        onClick={() => handleDelete(r.id)}
+                        className="px-4 text-[#9E988E] hover:text-[#c4846a] transition-colors shrink-0"
+                        title="删除"
                       >
-                        重试
+                        <Trash2 size={16} />
                       </button>
                     </div>
                   ) : (
                     /* 正常状态 */
-                    <div className="px-5 py-4">
-                      <p className="text-sm text-[#5A544B]">
-                        {r.title}
-                      </p>
-                      <p className="text-xs text-[#9E988E] mt-1">
-                        生成于{formatLabel(r.generatedAt)}
-                      </p>
+                    <div className="flex items-center">
+                      <Link
+                        href={`/reports/${r.id}`}
+                        className="flex-1 px-5 py-4 hover:bg-[#FCFAF5] transition-colors"
+                      >
+                        <p className="text-sm text-[#5A544B]">
+                          {r.title}
+                        </p>
+                        <p className="text-xs text-[#9E988E] mt-1">
+                          生成于{formatLabel(r.generatedAt)}
+                        </p>
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(r.id)}
+                        className="no-print px-4 text-[#9E988E] hover:text-[#c4846a] transition-colors"
+                        title="删除"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   )}
                 </div>
