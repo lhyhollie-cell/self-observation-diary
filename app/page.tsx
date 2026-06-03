@@ -71,20 +71,8 @@ const REPORT_ICONS: Record<string, React.ComponentType<{ className?: string }>> 
   "下阶段建议": Compass,
 };
 
-// 渲染卡片内容：数组渲染为分点列表，字符串渲染为段落
-function renderCardContent(content: any) {
-  if (Array.isArray(content) && content.length > 0) {
-    return (
-      <ul className="space-y-2">
-        {content.map((item: string, i: number) => (
-          <li key={i} className="text-sm text-[#5A544B] leading-relaxed flex items-start gap-2.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#8FAE8B] mt-2 shrink-0" />
-            <span>{cleanText(typeof item === "string" ? item : "")}</span>
-          </li>
-        ))}
-      </ul>
-    );
-  }
+// 渲染卡片内容：将字段文本渲染为段落
+function renderCardText(content: string) {
   const text = typeof content === "string" ? content : "";
   if (!text.trim()) return null;
   return (
@@ -100,10 +88,8 @@ function renderReportCards(data: Record<string, any>) {
   const cards: JSX.Element[] = [];
   for (const [key, label] of items) {
     const content = data[key];
-    if (!content) continue;
-    if (typeof content === "string" && content.trim() === "") continue;
-    if (Array.isArray(content) && content.length === 0) continue;
-    const rendered = renderCardContent(content);
+    if (!content || (typeof content === "string" && content.trim() === "")) continue;
+    const rendered = renderCardText(content);
     if (!rendered) continue;
     const Icon = REPORT_ICONS[key];
     cards.push(
