@@ -222,13 +222,12 @@ export default function Home() {
           >
             + 今日记录
           </Link>
-          <button
-            onClick={handleGenerateReport}
-            disabled={generating}
-            className="w-full px-6 py-3 bg-[#D9C2A3] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#CBB596] transition-colors disabled:opacity-40"
+          <Link
+            href="/reports"
+            className="w-full block text-center px-6 py-3 bg-[#D9C2A3] text-[#FAF8F3] rounded-xl text-sm font-medium hover:bg-[#CBB596] transition-colors"
           >
-            {generating ? "正在回顾你的全部记录……" : "生成阶段报告"}
-          </button>
+            查看阶段报告
+          </Link>
         </div>
 
         {/* 阶段报告 */}
